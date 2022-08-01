@@ -39,4 +39,3 @@ jobs:
           echo ${{ variables.a }}
           echo ${{ variables.b }}
           echo ${{ variables.c }}
-	  echo 111
