@@ -1,0 +1,41 @@
+version: v2.0
+name: if表达式测试
+variables:
+  a: ""
+  b: ""
+  c: 2
+jobs:
+  job_id_1:
+    env:
+      env_a: ${{ variables.a }}
+      env_b: ${{ ci.workspace }}
+    steps:
+    - name: "a_blank"
+      id: step_1
+      if: "variables.a == ''"
+      run: |
+          echo ${{ variables.a }}
+          echo ${{ variables.b }}
+          echo ${{ variables.c }}
+          echo ::set-variable name=b::bbb
+    - name: a_not_blank
+      if: "variables.a != ''"
+      id: step_2
+      run: |
+          echo ${{ variables.a }}
+          echo ${{ variables.b }}
+          echo ${{ variables.c }}
+    - name: contains_b
+      if: "contains(variables.b, 'b')"
+      id: step_3
+      run: |
+          echo ${{ variables.a }}
+          echo ${{ variables.b }}
+          echo ${{ variables.c }}
+    - name: c大于1
+      if: "variables.c > 1"
+      id: step_4
+      run: |
+          echo ${{ variables.a }}
+          echo ${{ variables.b }}
+          echo ${{ variables.c }}
