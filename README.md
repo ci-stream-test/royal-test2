@@ -10,21 +10,18 @@
 + 特殊测试
   1. 测试结束后页面不应出现流水线 **删除流水线测试**
 
-![stream](https://stream.woa.com/pipeline/stream/api/external/stream/projects/671789/pipelines/badge?file_path=.ci%2Ftrigger.yml)
 > ##### 触发测试
 >
 > - .ci/trigger.yml 触发测试逻辑的Yaml文件
 > - trigger 分支，用来在此分支修改触发构建
 > - trigger.txt 总触发文件,修改后开启测试
 
-![stream](https://stream.woa.com/pipeline/stream/api/external/stream/projects/671789/pipelines/badge?file_path=.ci%2Ftrigger-tmp.yml)
 > ##### 触发测试-特殊测试
 >
 > - .ci/trigger-tmp.yml 特殊触发测试逻辑的Yaml文件
 > - trigger-tmp 用来执行触发分支
 > - ymls/delete.yml 用来测试流水线删除的功能
 
-![stream](https://stream.woa.com/pipeline/stream/api/external/stream/projects/671789/pipelines/badge?file_path=.ci%2Fall.yml)
 > ##### 全部语法测试(除模板)
 > 
 > - .ci/all.yml 全部语法Yaml文件
@@ -32,7 +29,6 @@
 > - master MR目标分支
 > - triggers/trigger-all.txt 触发文件 -自动修改(手动)
 
-![stream](https://stream.woa.com/pipeline/stream/api/external/stream/projects/671789/pipelines/badge?file_path=.ci%2Fall-templates.yml)
 > ##### 全部语法测试(模板)
 > 
 > - .ci/all-templates.yml 全部语法(模板)Yaml文件
@@ -43,7 +39,6 @@
 > - master MR目标分支
 > - triggers/trigger-all-templates.txt 触发文件 -自动修改(手动)
 
-![stream](https://stream.woa.com/pipeline/stream/api/external/stream/projects/671789/pipelines/badge?file_path=.ci%2Fcheck.yml)
 > ##### Stage-Check 功能综合测试
 > 
 > - .ci/check.yml Stage-Check 功能综合测试Yaml文件
@@ -53,13 +48,11 @@
 > - master MR目标分支
 > - triggers/trigger-check.txt 触发文件 -自动修改(手动)
 
-![stream](https://stream.woa.com/pipeline/stream/api/external/stream/projects/671789/pipelines/badge?file_path=.ci%2FotherAgent.yml)
 > ##### 跨项目引用构建机测试 测试
 > 
 > - .ci/merge-action.yml otherAgent 测试Yaml文件
 > - trigger-tmp 用来执行触发分支
 
-![stream](https://stream.woa.com/pipeline/stream/api/external/stream/projects/671789/pipelines/badge?file_path=.ci%2Fmerge-acton.yml)
 > ##### merge action 测试
 > 
 > - .ci/merge-action.yml merge action 测试Yaml文件
