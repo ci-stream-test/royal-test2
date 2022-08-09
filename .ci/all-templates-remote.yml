@@ -1,0 +1,21 @@
+version: v2.0
+ 
+name: 全部语法测试(模板)-远程模板
+
+on:
+  mr:
+    target-branches:
+      - master
+    paths:
+      - triggers/trigger-all-template.txt
+  
+ 
+extends:
+  template: all-test/remote/all-extends.yml@all-template
+
+
+resources:
+  repositories:
+    - repository: test-ci-test/all-test-templates
+      name: all-template
+      ref: remote  # 可选  

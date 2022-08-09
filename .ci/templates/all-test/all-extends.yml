@@ -1,0 +1,174 @@
+parameters:
+  - name: content
+    type: string
+
+variables:
+  EVENT: xxx
+  template:
+  - name: variables.yml@variablesRepo
+ 
+stages:
+- name: 预设替换变量
+  jobs:
+    all-job-0:
+      steps:
+      - run: |
+          echo "::set-variable name=EVENT::${{ci.event}}"
+      - name: "腾讯代码分析(官方-代码分析工作组)"
+        id: "step_2"
+        uses: "CodeccCheckAtomDebug@4.*"
+        with:
+          beAutoLang: false
+          languages:
+          - "JAVA"
+          checkerSetType: "normal"
+          tools:
+          - "CLOC"
+          - "DUPC"
+          - "WOODPECKER_SENSITIVE"
+          - "CCN"
+          - "CHECKSTYLE"
+          - "PECKER_SECURITY"
+          - "IP_CHECK"
+          - "HORUSPY"
+          - "COVERITY"
+          asyncTask: false
+          asyncTaskId: ""
+          goPath: ""
+          pyVersion: "py3"
+          scriptType: "SHELL"
+          script: "# Coverity/Klocwork将通过调用编译脚本来编译您的代码，以追踪深层次的缺陷\n# 请使用依赖的构建工具如maven/cmake等\
+            写一个编译脚本build.sh\n# 确保build.sh能够编译代码\n# cd path/to/build.sh\n# sh build.sh\n"
+          languageRuleSetMap:
+            JAVA_RULE:
+            - "codecc_fast_java"
+            - "standard_java"
+            - "standard_java_stockproj"
+            - "pecker_java"
+          C_CPP_RULE: []
+          rtxReceiverType: "1"
+          rtxReceiverList: []
+          botWebhookUrl: ""
+          botRemindRange: "2"
+          botRemindSeverity: "7"
+          botRemaindTools: []
+          emailReceiverType: "1"
+          emailReceiverList: []
+          emailCCReceiverList: []
+          instantReportStatus: "2"
+          reportDate: []
+          reportTime: ""
+          reportTools: []
+          toolScanType: "1"
+          mrCommentEnable: true
+          prohibitIgnore: false
+          newDefectJudgeFromDate: ""
+          transferAuthorList: []
+          path: []
+          customPath: []
+          scanTestSource: false
+          openScanPrj: false
+          issueSystem: "TAPD"
+          issueSubSystem: ""
+          issueResolvers: []
+          issueReceivers: []
+          issueFindByVersion: ""
+          maxIssue: 1000
+          issueAutoCommit: false
+          issueTools: []
+          issueSeverities: []
+          JAVA_RULE:
+          - "codecc_fast_java"
+          - "standard_java"
+          - "standard_java_stockproj"
+          - "pecker_java"
+          JAVA_TOOL:
+          - toolList:
+            - "CLOC"
+            - "DUPC"
+            - "WOODPECKER_SENSITIVE"
+            - "CCN"
+          - toolList:
+            - "CHECKSTYLE"
+          - toolList:
+            - "CHECKSTYLE"
+          - toolList:
+            - "PECKER_SECURITY"
+            - "WOODPECKER_SENSITIVE"
+            - "IP_CHECK"
+            - "HORUSPY"
+            - "COVERITY"    
+- name: Linux-公共
+  label: Deploy
+  id: stage-linux
+  jobs:
+    template:
+      - name: all-test/all-job-1.yml
+    all-job-2:
+      name: all-job-2
+      depend-on: [all-job-1]
+      steps:
+      - run: |
+          echo " all-job-2 [continue-on-error, dependon] 执行完成"
+          exit 1
+      continue-on-error: true
+- template: all-test/all-stage-1.yml@all-template
+- template: all-test/all-stage-2.yml@all-template
+  parameters:
+    content: ${{ parameters.content }}
+
+
+finally:
+  all-job-f-1:
+    name: all-job-f-1
+    if: SUCCESS
+    steps:
+    - run: |
+        echo "all-job-f-1 [finally, if] 执行完成"
+
+notices:
+- type: email
+  title: ${{ci.event}}触发 STREAM-PROD环境-全部语法测试(模板) 测试成功
+  content: ${{ci.event}}触发 STREAM-PROD环境-全部语法测试(模板) 测试成功
+  receivers:
+    - ${{ ci.actor }}
+  if: SUCCESS
+- type: wework-message
+  content: ${{ variables.EVENT }}触发 STREAM-PROD环境-全部语法测试(模板) 测试成功
+  receivers:
+    - ${{ ci.actor }} 
+  if: SUCCESS       
+- type: wework-chat
+  chat-id: 
+    - ${{ variables.CHAT_ID }} 
+    # - ww230072302
+  content: ${{ variables.EVENT }}触发 STREAM-PROD环境-全部语法测试(模板) 测试成功 
+  if: SUCCESS
+- type: email
+  title: ${{ variables.EVENT }}触发 STREAM-PROD环境-全部语法测试(模板) 测试失败
+  content: ${{ variables.EVENT }}触发 STREAM-PROD环境-全部语法测试(模板) 测试失败
+  receivers:
+    - ${{ ci.actor }}
+  if: FAILURE
+- type: wework-message
+  content: ${{ variables.EVENT }}触发 STREAM-PROD环境-全部语法测试(模板) 测试失败
+  receivers:
+    - ${{ ci.actor }} 
+  if: FAILURE       
+- type: wework-chat
+  chat-id: 
+    - ${{ variables.CHAT_ID }} 
+    # - ww230072302
+  content: ${{ variables.EVENT }}触发 STREAM-PROD环境-全部语法测试(模板) 测试失败
+  if: FAILURE  
+
+resources:
+  repositories:
+    - repository: prod-ci-test/all-test-templates
+      name: all-template
+      ref: master  # 可选
+    - repository: prod-ci-test/all-test-templates
+      name: variablesRepo
+      ref: variables  # 可选
+      credentials: # 可选，默认为开启CI的用户
+        personal-access-token: ${{ settings.ruotian_private_token }}    

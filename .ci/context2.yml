@@ -1,0 +1,48 @@
+version: v2.0
+
+on:
+  push:
+  - master
+  - trigger
+
+steps:
+  - name: 输出上下文
+    run: |
+      echo  PASSWORD ${{ settings.ruotian_password_test.password }}
+
+      echo  ACCESSTOKEN ${{ settings.ruotian_private_token.access_token }}
+
+      echo  USERNAME_PASSWORD username ${{ settings.ruotian_username_password_test.username }}
+      echo  USERNAME_PASSWORD password ${{ settings.ruotian_username_password_test.password }}
+
+      echo  SECRETKEY ${{ settings.ruotian_secretKey_test.secretKey }}
+
+      echo  APPID_SECRETKEY appid ${{ settings.keystore_f00b20e567.appId }}
+      echo  APPID_SECRETKEY secretKey ${{ settings.keystore_f00b20e567.secretKey }}
+
+      echo  SSH_PRIVATEKEY privateKey 
+      cat>private_key.txt<<EOF
+      ${{ settings.ruotian_ssh_test.privateKey }}
+      EOF
+      cat private_key.txt
+
+      echo  SSH_PRIVATEKEY passphrase ${{ settings.ruotian_ssh_test.passphrase }}
+
+      echo  TOKEN_SSH_PRIVATEKEY token ${{ settings.ruotian_ssh_token.token }}
+      echo  TOKEN_SSH_PRIVATEKEY privateKey 
+      cat>private_key_1.txt<<EOF
+      ${{ settings.ruotian_ssh_token.privateKey }}
+      EOF
+      cat private_key_1.txt
+      echo  TOKEN_SSH_PRIVATEKEY passphrase ${{ settings.ruotian_ssh_token.passphrase }}
+
+      echo  MULTI_LINE_PASSWORD 
+      cat>mutil.txt<<EOF
+      ${{ settings.ruotian_mu_password_test.password }}
+      EOF
+      cat mutil.txt
+
+      # echo  COS_APPID_SECRETID_SECRETKEY_REGION cosappId ${{ settings.ruotian_password_token_test.cosappId }}
+      # echo  COS_APPID_SECRETID_SECRETKEY_REGION secretId ${{ settings.ruotian_password_token_test.secretId }}
+      # echo  COS_APPID_SECRETID_SECRETKEY_REGION secretKey ${{ settings.ruotian_password_token_test.secretKey }}
+      # echo  COS_APPID_SECRETID_SECRETKEY_REGION region ${{ settings.ruotian_password_token_test.region }}

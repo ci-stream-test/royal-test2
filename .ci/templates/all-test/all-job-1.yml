@@ -1,0 +1,7 @@
+jobs:
+  all-job-1:
+    env: 
+      output_content: "all-job-1 [基本语法] 执行完成"
+    name: all-job-1
+    steps:
+    - template: all-test/all-step-1.yml

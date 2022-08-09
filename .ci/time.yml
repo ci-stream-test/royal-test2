@@ -1,0 +1,28 @@
+version: v2.0
+ 
+name: 定时触发综合测试
+
+on:
+  schedules:
+    cron: "0 */5 * * * ?"
+    always: true
+    branches: [ "trigger" ]
+
+steps:
+- checkout: self
+- run: |
+    git config --list
+    echo ci.actor="${{ ci.actor }}"
+    echo ci.actor="${{ ci.event }}"
+
+
+notices:
+  - type: wework-message
+    title: Stream schedule test
+    content: Stream schedule test fail.
+    receivers:
+      - randychen
+      - royalhuang
+      - ruotiantang
+      - yongyiduan
+    if: FAILURE

@@ -1,0 +1,19 @@
+parameters:
+  - name: receivers
+    type: array
+    default: [ "${{ ci.actor }}" ]
+
+gates:
+  - name: UnitTestPassRate
+    rule:
+      - ngtestQuality.pass_rate >= 1 # 用例整体通过率
+    notify-on-fail:
+      - type: wework-message
+        receivers: ${{ parameters.receivers }}
+  - name: UnitTestCoverRate
+    rule:
+      - ngtestQuality.total_cover_rate >= 0.3 # 全量覆盖率
+      - ngtestQuality.dif_cover_rate >= 0.5 # 增量覆盖率
+    notify-on-fail:
+      - type: wework-message
+        receivers: ${{ parameters.receivers }}

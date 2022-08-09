@@ -1,0 +1,26 @@
+version: v2.0
+ 
+name: 全部语法测试(模板)
+
+on:
+  push:
+    branches:
+      - trigger-all-template
+    paths:
+      - triggers/trigger-all-template.txt
+  tag:
+    tags:
+      - trigger-all-template-*
+    from-branches:
+      - trigger-all-template
+  mr:
+    target-branches:
+      - master
+    paths:
+      - triggers/trigger-all-template.txt
+  
+ 
+extends:
+  template: all-test/all-extends.yml
+  parameters:
+    content: 执行成功

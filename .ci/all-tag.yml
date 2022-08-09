@@ -1,0 +1,88 @@
+version: v2.0
+ 
+name: 全部语法测试-TAG(无模板)
+
+on:
+  tag:
+    tags:
+      - tag-all-*
+    from-branches:
+      - trigger-all
+  
+variables:
+  WINDOW_TRIGGER: false
+  CHAT_ID: ww230072302
+  EVENT: xxx
+ 
+stages:
+- name: 预设替换变量
+  jobs:
+    all-job-0:
+      steps:
+      - run: |
+          echo "::set-variable name=EVENT::${{ci.event}}"
+- name: Linux-公共
+  label: Deploy
+  id: stage-linux
+  jobs:
+    all-job-1:
+      env: 
+        output_content: "all-job-1 [基本语法] 执行完成"
+      name: all-job-1
+      steps:
+      - run: |
+          echo " ${output_content} "
+    all-job-2:
+      name: all-job-2
+      depend-on: [all-job-1]
+      steps:
+      - run: |
+            echo " all-job-2 [continue-on-error, dependon] 执行完成"
+            exit 1
+      continue-on-error: true
+- name: Window-私有
+  label: Deploy
+  jobs:
+    all-job-3:
+      name: all-job-3
+      steps:
+      - run: |
+          echo "::set-variable name=WINDOW_TRIGGER::true"
+    all-job-4:
+      if: variables.WINDOW_TRIGGER == true
+      name: all-job-4
+      depend-on: [all-job-3]
+      steps:
+      - run: |
+          echo " all-job-4 [variables, if, winodws-run] 执行完成"
+    all-job-5:
+      if: variables.WINDOW_TRIGGER == false
+      name: all-job-5  
+      depend-on: [all-job-3]  
+      steps:
+      - run: |
+          echo " all-job-5 [set variables] 执行失败"
+          exit 1
+    all-job-6:
+      env:
+        content: "执行失败"
+      name: all-job-6  
+      steps:
+      - run: |
+          if [ ${content} == 执行成功 ]
+          then 
+            echo " all-job-6 [step.env] ${content} "    
+          else 
+            echo " all-job-6 [step.env] ${content} "
+            exit
+          fi 
+        env:
+          content: "执行成功"   
+
+finally:
+  all-job-f-1:
+    name: all-job-f-1
+    if: SUCCESS
+    steps:
+    - run: |
+        echo "all-job-f-1 [finally, if] 执行完成"

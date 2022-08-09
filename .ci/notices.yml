@@ -1,0 +1,51 @@
+version: v2.0
+name: 通知和变量二次替换
+
+on:
+  push:
+    branches:
+      - trigger-all
+    paths:
+      - triggers/trigger-all.txt
+
+variables:
+  build_num: ${{ ci.build_num }}
+  actor: ${{ ci.actor }}
+
+steps:
+- run: |
+    echo "hello, world!"
+    echo ::set-output name=output_1::set-output at run step
+    echo ::set-variable name=var_1::set-variable at run step1
+    echo $ENV_A
+  id: prepare_vars
+  env:
+    ENV_A: aaaa
+  
+
+notices:
+- type: email
+  title: this is a email notice
+  content: this is a email notice,content is hello1, buildNo is ${{ variables.build_num }}.
+  receivers:
+    - ${{ variables.actor }}
+  ccs:
+    - ${{ variables.actor }}
+  if: FAILURE
+- type: email
+- type: wework-message
+- type: wework-message
+  title: this is a wework-message notice
+  content: |
+      this is a wework-message notice,content is hello
+      variables.build_num is ${{ variables.build_num }}
+      ci.build_num is ${{ ci.build_num }}
+      ci.head_ref is ${{ ci.head_ref }}
+      variables.var_1 is ${{ variables.var_1 }}
+      steps.prepare_vars.outputs.output_1 is ${{ steps.prepare_vars.outputs.output_1 }}
+  receivers:
+    - ${{ variables.actor }}
+- type: wework-chat
+  chat-id: 
+    - ww3044319813
+  content: this is a wework-chat notice,content is hello, buildNo is ${{ variables.build_num }}.

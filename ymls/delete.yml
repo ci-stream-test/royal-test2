@@ -1,0 +1,12 @@
+version: v2.0
+ 
+name: 删除流水线测试
+
+on:
+  push:
+    branches:
+    - trigger-tmp
+
+steps:
+  - run: |
+      echo " 删除流水线测试 "    

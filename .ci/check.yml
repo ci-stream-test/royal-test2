@@ -1,0 +1,218 @@
+version: v2.0
+ 
+name: Stage-Check 功能综合测试
+
+on:
+  push:
+    branches:
+      - trigger-check
+    paths:
+      - triggers/trigger-check.txt
+  tag:
+    tags:
+      - tag-check-*
+    from-branches:
+      - trigger-check
+  mr:
+    target-branches:
+      - master
+    paths:
+      - triggers/trigger-check.txt
+
+variables:
+  reviewer: ${{ ci.actor }}
+  # reviewers: ruotiantang
+
+stages:
+- name: "前置stage"
+  jobs:
+    check-job-0:
+      steps:
+      - run: |
+          echo "前置stage"
+      - name: "腾讯代码分析(官方-代码分析工作组)"
+        id: "step_2"
+        uses: "CodeccCheckAtomDebug@4.*"
+        with:
+          beAutoLang: false
+          languages:
+          - "JAVA"
+          checkerSetType: "normal"
+          tools:
+          - "CLOC"
+          - "DUPC"
+          - "WOODPECKER_SENSITIVE"
+          - "CCN"
+          - "CHECKSTYLE"
+          - "PECKER_SECURITY"
+          - "IP_CHECK"
+          - "HORUSPY"
+          - "COVERITY"
+          asyncTask: false
+          asyncTaskId: ""
+          goPath: ""
+          pyVersion: "py3"
+          scriptType: "SHELL"
+          script: "# Coverity/Klocwork将通过调用编译脚本来编译您的代码，以追踪深层次的缺陷\n# 请使用依赖的构建工具如maven/cmake等\
+            写一个编译脚本build.sh\n# 确保build.sh能够编译代码\n# cd path/to/build.sh\n# sh build.sh\n"
+          languageRuleSetMap:
+            JAVA_RULE:
+            - "codecc_fast_java"
+            - "standard_java"
+            - "standard_java_stockproj"
+            - "pecker_java"
+          C_CPP_RULE: []
+          rtxReceiverType: "1"
+          rtxReceiverList: []
+          botWebhookUrl: ""
+          botRemindRange: "2"
+          botRemindSeverity: "7"
+          botRemaindTools: []
+          emailReceiverType: "1"
+          emailReceiverList: []
+          emailCCReceiverList: []
+          instantReportStatus: "2"
+          reportDate: []
+          reportTime: ""
+          reportTools: []
+          toolScanType: "1"
+          mrCommentEnable: true
+          prohibitIgnore: false
+          newDefectJudgeFromDate: ""
+          transferAuthorList: []
+          path: []
+          customPath: []
+          scanTestSource: false
+          openScanPrj: false
+          issueSystem: "TAPD"
+          issueSubSystem: ""
+          issueResolvers: []
+          issueReceivers: []
+          issueFindByVersion: ""
+          maxIssue: 1000
+          issueAutoCommit: false
+          issueTools: []
+          issueSeverities: []
+          JAVA_RULE:
+          - "codecc_fast_java"
+          - "standard_java"
+          - "standard_java_stockproj"
+          - "pecker_java"
+          JAVA_TOOL:
+          - toolList:
+            - "CLOC"
+            - "DUPC"
+            - "WOODPECKER_SENSITIVE"
+            - "CCN"
+          - toolList:
+            - "CHECKSTYLE"
+          - toolList:
+            - "CHECKSTYLE"
+          - toolList:
+            - "PECKER_SECURITY"
+            - "WOODPECKER_SENSITIVE"
+            - "IP_CHECK"
+            - "HORUSPY"
+            - "COVERITY"
+  check-out:
+    gates:
+      - template: check/check-epc_checks1.yml
+        parameters:
+            total_cover_rate: 0.85
+- name: "Stage-check综合测试"
+  jobs:
+    check-job-1:
+      steps:
+      - run: |
+          echo "Stage-check综合测试"
+  check-in:
+    reviews:
+      flows:
+        - name: variables单替换测试
+          reviewers: &id001 ['${{ ci.actor }}', royalhuang, randychen, ruotiantang, fayewang]
+        - name: variables多替换测试
+          reviewers: *id001
+        - name: ci变量替换测试
+          reviewers: *id001
+        - name: 多变量部分替换测试
+          reviewers: *id001
+      variables:
+        var_1:
+          default: 1
+          label: 数字选择测试
+          type: SELECTOR
+          values: [1,2,3]
+        var_2:
+          # default: 1
+          label: 英文选择测试
+          type: SELECTOR
+          values: [a,b,c] 
+        var_3:
+          default: 若天
+          label: 中文选择测试
+          type: SELECTOR
+          values: [若天,家锐,橘子]   
+        var_4:
+          # default: ruotian
+          label: 输入测试
+          type: INPUT
+          # values: [a,b,c] 
+        var_5:
+          default: ruotian
+          label: text输入测试
+          type: TEXTAREA
+          # values: [a,b,c] 
+        var_6:
+          default: [a,b]
+          label: 多选测试
+          type: SELECTOR-MULTIPLE
+          values: [a,b,c] 
+        var_7:
+          # default: ruotian
+          label: 布尔测试
+          type: BOOL
+          # values: [a,b,c]      
+      description: |
+        综合测试
+    gates:
+      - template: check/check-epc_checks1.yml
+        parameters:
+          receivers: *id001
+      - template: check/check-epc_checks2.yml   
+        parameters:
+          receivers: *id001  
+    timeout-hours: 10
+- name: "人工审核单独测试"
+  jobs:
+    check-job-1:
+      steps:
+      - run: |
+          echo "人工审核单独测试"
+  check-in:
+    reviews:
+      flows:
+        - name: variables单替换测试
+          reviewers: *id001
+- name: "质量红线单独测试"
+  jobs:
+    check-job-1:
+      steps:
+      - run: |
+          echo "质量红线单独测试"
+  check-in:
+    gates:
+      - template: check/check-epc_checks1.yml
+        parameters:
+          receivers: *id001
+  check-out:
+    gates:
+      - template: check/check-epc_checks1.yml
+        parameters:
+          receivers: *id001
+
+finally:
+  all-job-f-1:
+    name: finally-test
+    steps:
+    - run: |
+        echo "执行完成"

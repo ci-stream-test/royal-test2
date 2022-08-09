@@ -1,0 +1,109 @@
+version: v2.0
+
+on:
+  repo_hook:
+  - name: yongyiduanGroup1/**
+    credentials: duanduan_private_token
+    events:
+      push:
+        branches: [ "master" ]
+      mr:
+        target-branches: [ "master" ]
+      note:
+        types:
+          - commit
+      review:
+        types:
+          - comparison    # 无关联MR
+          - merge_request # 关联MR
+        states:
+          - approved
+          - approving
+          - change_denied
+          - change_required
+      issue:
+        action:
+          - open
+          - close
+          - reopen
+          - update
+      delete:
+        types:
+          - branch
+          - tag
+  - name: yongyiduanGroup1/yongyiduanGroup2/yongyiduanGroup3/**
+    credentials: duanduan_private_token
+    events:
+      push:
+        branches: [ "master" ]
+      mr:
+        target-branches: [ "master" ]
+      note:
+        types:
+          - commit
+      review:
+        types:
+          - comparison    # 无关联MR
+          - merge_request # 关联MR
+        states:
+          - approved
+          - approving
+          - change_denied
+          - change_required
+      issue:
+        action:
+          - open
+          - close
+          - reopen
+          - update
+      delete:
+        types:
+          - branch
+          - tag
+  note:
+    types:
+      - issue
+    
+steps:
+- run: |
+    echo "ci.workspace is ${{ ci.workspace }}"
+    echo "ci.token is ${{ ci.token }}"
+    echo "ci.pipeline_name is ${{ ci.pipeline_name }}"
+    echo "ci.actor is ${{ ci.actor }}"
+    echo "ci.build_id is ${{ ci.build_id }}"
+    echo "ci.build_num is ${{ ci.build_num }}"
+    echo "ci.build_url is ${{ ci.build_url }}"
+    echo "ci.repo is ${{ ci.repo }}"
+    echo "ci.repo_name is ${{ ci.repo_name }}"
+    echo "ci.repo_group is ${{ ci.repo_group }}"
+    echo "ci.event is ${{ ci.event }}"
+    echo "ci.ref is ${{ ci.ref }}"
+    echo "ci.branch is ${{ ci.branch }}"
+    echo "ci.sha is ${{ ci.sha }}"
+    echo "ci.sha_short is ${{ ci.sha_short }}"
+    echo "ci.commit_message is ${{ ci.commit_message }}"
+    # note
+    echo 'ci.event = ${{ ci.event }}'
+    echo 'ci.event_url = ${{ ci.event_url }}'
+    echo 'ci.note_id = ${{ ci.note_id }}'
+    echo 'ci.note_comment = ${{ ci.note_comment }}'
+    # review
+    echo 'ci.event = ${{ ci.event }}'
+    echo 'ci.event_url = ${{ ci.event_url }}'
+    echo 'ci.review_id = ${{ ci.review_id }}'
+    echo 'ci.review_iid = ${{ ci.review_iid }}'
+    echo 'ci.review_owner = ${{ ci.review_owner }}'
+    echo 'ci.review_state = ${{ ci.review_state }}'
+    echo 'ci.review_reviewers = ${{ ci.review_reviewers }}'
+    # issue
+    echo 'ci.event = ${{ ci.event }}'
+    echo 'ci.repo_url = ${{ ci.repo_url }}'
+    echo 'ci.issue_title = ${{ ci.issue_title }}'
+    echo 'ci.issue_id = ${{ ci.issue_id }}'
+    echo 'ci.issue_iid = ${{ ci.issue_iid }}'
+    echo 'ci.issue_description = ${{ ci.issue_description }}'
+    echo "ci.issue_state = ${{ ci.issue_state }}"
+    echo "ci.issue_owner = ${{ ci.issue_owner }}"
+    echo "ci.event_url = ${{ ci.event_url }}"
+    echo "ci.issue_milestone_id = ${{ ci.issue_milestone_id }}"
+    echo "ci.action is ${{ ci.action }}"

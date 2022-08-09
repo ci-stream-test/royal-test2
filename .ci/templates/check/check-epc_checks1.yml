@@ -1,0 +1,14 @@
+parameters:
+- name: receivers
+  type: array
+  default: [ruotiantang, royalhuang]
+
+gates:
+- name: gate-1
+  rule:     
+  - CodeccCheckAtomDebug.coverity_serious_defect < 1
+  notify-on-fail:
+  - type: wework-message
+    receivers: ${{ parameters.receivers }}
+  continue-on-fail:
+    gatekeepers: [xuzhan,ddlin,fayewang,jamikxu,randychen,royalhuang,ruotiantang]

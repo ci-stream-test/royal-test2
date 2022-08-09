@@ -1,0 +1,32 @@
+version: v2.0
+ 
+name: 全部语法测试(模板)-EXTEND
+
+on:
+  push:
+    branches:
+      - master
+  #     - trigger-all-template
+  #   paths:
+  #     - triggers/trigger-all-template.txt
+  # tag:
+  #   tags:
+  #     - trigger-all-template-*
+  #   from-branches:
+  #     - trigger-all-template
+  # mr:
+  #   target-branches:
+  #     - master
+  #   paths:
+  #     - triggers/trigger-all-template.txt
+  
+ 
+extends:
+  template: all-test/all-extend.yml@all-template
+  parameters:
+    service: SropThirtySevenCgi
+
+resources:
+  repositories:
+    - repository: prod-ci-test/all-test-templates
+      name: all-template

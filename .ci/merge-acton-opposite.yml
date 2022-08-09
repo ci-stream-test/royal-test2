@@ -1,0 +1,18 @@
+version: v2.0
+ 
+name: merge action 相反 测试
+
+on:
+  mr:
+    target-branches:
+      - trigger-merge-test
+    action:
+      - push-update
+ 
+stages:
+- name: 只是为了触发罢了
+  jobs:
+    all-job-0:
+      steps:
+      - run: |
+          echo "只是为了触发罢了"

@@ -1,0 +1,38 @@
+# ci/build.yml
+
+version: v2.0
+name: 矩阵测试
+stages:
+- name: 动态矩阵
+  jobs:
+    prepare:
+        steps:
+        - run: |
+            # 根据变更文件判断哪些模块发生变更（需自行通过脚本判定，这里仅示例如何将结果传给 Matrix Job）
+            echo "::set-output name=parameters::{\"service\": [\"manager\", \"webhook\", \"api\", \"gateway\", \"manual\"]}"
+          id: set-matrix
+          name: 矩阵参数生成
+    build:
+        depend-on: 
+        - prepare
+        strategy:
+            matrix: ${{ fromJSON(jobs.prepare.steps.set-matrix.outputs.parameters) }}
+        name: build ${{ matrix.service }} image
+        steps:
+        - run: echo "::set-output name=myoutput::${{matrix.service}}"
+          id: runStep
+        - run: echo ${{ steps.runStep.outputs.myoutput }}
+- name: 静态矩阵
+  jobs:
+    node-build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+          matrix:
+            os: [docker, macos-10.15]
+            node: ["12.13.1", "10.11.0"]
+        steps:
+          - run: |
+                # matrix上下文可以用于控制环境依赖，例如node版本指定111
+                # export PATH=/data/bkdevops/apps/nodejs/${{ matrix.node }}/bin:$PATH
+                echo ${{ matrix.node }}
+            name: node.js编译

@@ -1,0 +1,22 @@
+version: v2.0
+ 
+name: 跨项目引用构建机测试
+
+on:
+  push:
+  - trigger
+
+jobs:
+  job_id_1:
+    runs-on:
+      agent-selector: [linux]
+      self-hosted: true
+      pool-name: faye
+    steps:
+    - run: echo "hello local "
+
+
+resources:
+  pools:
+    - from: fayewang/ci_test@aaa
+      name: faye

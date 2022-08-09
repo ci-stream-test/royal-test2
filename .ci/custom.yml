@@ -1,0 +1,15 @@
+version: v2.0
+
+on:
+  push: 
+  - trigger
+
+stages:
+  - jobs:
+      job_id_1:
+        steps:
+          - run: |
+              echo ::set-gate-value name=ruotiantest::1
+    check-out:
+      gates:
+        -  template: check/check-custom.yml

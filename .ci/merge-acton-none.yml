@@ -1,0 +1,16 @@
+version: v2.0
+ 
+name: merge 默认action 测试
+
+on:
+  mr:
+    target-branches:
+      - trigger-merge-test
+ 
+stages:
+- name: 只是为了触发罢了
+  jobs:
+    all-job-0:
+      steps:
+      - run: |
+          echo "只是为了触发罢了"

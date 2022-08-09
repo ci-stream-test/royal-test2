@@ -1,0 +1,9 @@
+gates:
+- name: gate-1
+  rule:     
+  - linuxScript.ruotiantest < 1
+  notify-on-fail:
+  - type: wework-message
+    receivers: [xuzhan,fayewang,jamikxu,randychen,royalhuang,ruotiantang]
+  continue-on-fail:
+    gatekeepers: [xuzhan,fayewang,jamikxu,randychen,royalhuang,ruotiantang]

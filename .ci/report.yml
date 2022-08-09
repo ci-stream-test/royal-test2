@@ -1,0 +1,51 @@
+version: v2.0
+ 
+name: 查看报告测试
+
+on:
+  push:
+    branches:
+      - trigger-all
+    paths:
+      - triggers/trigger-all.txt
+
+stages:
+- name: 预设替换变量
+  jobs:
+    all-job-0:
+      steps:
+      - run: |
+          rm -rf  ./report
+          mkdir ./report
+          echo 若天查看报告测试 > ./report/report.txt
+      - uses: ReportArctifactoryNew@1.*
+        name: 蓝盾仓库报告
+        with:
+          # 待展示的产出物报告路径（该路径下所有子文件均会被归档）, 必选
+          fileDir: ./report
+          # 入口文件, 必选
+          indexFile: report.txt
+          # 入口文件编码, 默认: UTF-8, single, options: UTF-8[UTF-8] | Big5[Big5] | GB2312[GB2312] | GBK[GBK] | UTF-16[UTF-16] | UTF-16BE[UTF-16BE] | UTF-16LE[UTF-16LE] | ISO-8859-1[ISO-8859-1] | US-ASCII[US-ASCII] | default[系统默认编码]
+          indexFileCharset: UTF-8
+          # 标签别名, 必选
+          reportName: 1
+          # 启用并行上传, 默认: false
+          isParallel: false
+          # 同时启用邮件通知, 默认: true
+          isSendEmail: false
+          # # 收件人，支持邮件组, 必选
+          # receivers:
+          #     - string
+          #     - string
+          # 邮件主题, 必选, 默认: 【${pipeline.name}】  #${pipeline.build.num} 自定义报告已归档
+          # body: string  
+    all-job-1:
+      runs-on: agentless
+      steps:
+        - uses: OuputLink@1.*
+          name: 第三方报告测试
+          with:
+            # 标题, 必选
+            inputTitle: 第三方报告测试
+            # 链接, 必选
+            inputURL: https://iwiki.woa.com/pages/viewpage.action?pageId=673026981

@@ -1,0 +1,55 @@
+version: v2.0
+ 
+name: 自动触发文件-特殊测试
+
+on:
+  push:
+    branches:
+      - trigger
+    paths:
+      - trigger.txt 
+  mr:
+    target-branches:
+      - trigger
+    paths:
+      - trigger.txt      
+
+steps:
+- checkout: self
+  name: 拉取 all-test 代码
+  with:
+    strategy: FRESH_CHECKOUT  
+- name: "删除流水线测试: 新增文件"
+  run: |
+    set -x
+    git checkout trigger-tmp
+    git pull 
+    git fetch origin master
+    git merge origin/master -m "删除流水线测试: 新增文件"
+    cp ymls/delete.yml .ci/delete.yml
+    git add .ci/delete.yml
+    git commit -am "${time} 删除流水线测试: 新增文件"
+    git pull
+    git push
+- name: "删除流水线测试: 删除文件"
+  run: |
+    sleep 10
+    set -x
+    git checkout trigger-tmp
+    git pull
+    rm .ci/delete.yml
+    git add .ci
+    git commit -am "${time} 删除流水线测试: 删除文件"
+    git pull
+    git push
+- name: "触发一些特殊的测试，具体查看CommitCheck"
+  run: |
+    set -x
+    time=$(date "+%Y-%m-%d-%H-%M-%S")
+    git checkout trigger-tmp
+    git pull 
+    git pull origin master
+    echo "${time}" >> triggers/trigger-tmp.txt
+    git commit -am "${time} 触发一些特殊的测试，具体查看CommitCheck"
+    git push
+   

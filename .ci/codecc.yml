@@ -1,0 +1,126 @@
+version: v2.0
+
+name: CodeCC功能测试
+
+resources:
+  repositories:
+    - repository: ci_templates/public/codecc
+      name: codecc
+
+on:
+  push:
+    # branches:
+    #   - trigger-check
+    # paths:
+    #   - triggers/trigger-check.txt
+    branches:
+      - trigger
+  tag:
+    tags:
+      - tag-check-*
+    from-branches:
+      - trigger-check
+  mr:
+    target-branches:
+      - master
+    paths:
+      - triggers/trigger-check.txt
+
+variables:
+  lintUrl: https://git.woa.com/jimxzcai/cpp_test_jim.git
+  compileUrl: https://git.woa.com/jimxzcai/cpp_test_jim.git
+  reviewer: ${{ ci.actor }}
+
+stages:
+  - name: "stage1"
+    jobs:
+      job_1:
+        steps:
+          - run: |
+              echo "预处理 or do something"
+  - name: "stage2-自主配置规则集"
+    jobs:
+      job_2:
+        runs-on:
+          pool-name: docker  #docker-on-devcloud、docker、local、agentless
+          container:
+            image: mirrors.tencent.com/ci/tlinux_ci:0.5.0.4
+        steps:
+          - checkout: https://git.woa.com/jimxzcai/cpp_test_jim.git
+            with:
+              refName: stream-test
+          - uses: CodeccCheckAtomDebug@4.*
+            name: Coverity腾讯代码分析
+            with:
+                beAutoLang: false # 不自动检测项目语言
+                checkerSetType: "normal" # 规则集类型，normal对应自主配置规则集，openScan对应按开源治理要求配置，epcScan对应按PCG EPC要求配置。选了openScan或epcScan则不需要填写后面的内容
+                toolScanType: "0" # 扫描方式。0是全量扫描，1是快速全量扫描
+                languages: # 工程语言, 必选, 可取值："C_CPP", "JAVA", "C_SHARP", "JS", "OC", "PYTHON", "PHP", "RUBY", "GOLANG", "SWIFT", "TYPESCRIPT", "KOTLIN", "LUA", "OTHERS"
+                - "C_CPP"
+                script: "cd ${WORKSPACE} \n make clean \n make"
+                languageRuleSetMap: # 规则集, 必选, 需要按照语言来进行填写
+                    C_CPP_RULE:
+                        - "codecc_default_coverity_cpp"
+                customPath: # 黑名单。设置后不扫描黑名单中路径，例如.*/tirdParty/.*
+                    - ".*/js/vue/.*"
+      job_3:
+        runs-on:
+          pool-name: docker  #docker-on-devcloud、docker、local、agentless
+          container:
+            image: mirrors.tencent.com/ci/tlinux_ci:0.5.0.4
+        steps:
+          - checkout: https://git.woa.com/jimxzcai/cpp_test_jim.git
+            with:
+              refName: stream-test
+          - uses: CodeccCheckAtomDebug@4.*
+            name: CppLint腾讯代码分析
+            with:
+                beAutoLang: false # 不自动检测项目语言
+                checkerSetType: "normal" # 规则集类型，normal对应自主配置规则集，openScan对应按开源治理要求配置，epcScan对应按PCG EPC要求配置。选了openScan或epcScan则不需要填写后面的内容
+                toolScanType: "0" # 扫描方式。0是全量扫描，1是快速全量扫描
+                languages: # 工程语言, 必选, 可取值："C_CPP", "JAVA", "C_SHARP", "JS", "OC", "PYTHON", "PHP", "RUBY", "GOLANG", "SWIFT", "TYPESCRIPT", "KOTLIN", "LUA", "OTHERS"
+                - "C_CPP"
+                languageRuleSetMap: # 规则集, 必选, 需要按照语言来进行填写
+                    C_CPP_RULE:
+                        - "standard_cpp"
+                customPath: # 黑名单。设置后不扫描黑名单中路径，例如.*/tirdParty/.*
+                    - ".*/js/vue/.*"
+  - name: "stage3-OpenScan开源治理"
+    check-out: #Stage准出
+      gates: #声明质量红线
+      - template: commonGate.yml@codecc
+    jobs:
+      job_4:
+        runs-on:
+          pool-name: docker  #docker-on-devcloud、docker、local、agentless
+          container:
+            image: mirrors.tencent.com/ci/tlinux_ci:0.5.0.4
+        steps:
+          - checkout: https://git.woa.com/jimxzcai/cpp_test_jim.git
+            with:
+              refName: stream-test
+          - uses: CodeccCheckAtomDebug@4.*
+            name: 腾讯代码分析
+            with:
+                beAutoLang: true # 不自动检测项目语言
+                checkerSetType: "openScan" # 规则集类型，normal对应自主配置规则集，openScan对应按开源治理要求配置，epcScan对应按PCG EPC要求配置。选了openScan或epcScan则不需要填写后面的内容
+                customPath: # 黑名单。设置后不扫描黑名单中路径，例如.*/tirdParty/.*
+                    - ".*/js/vue/.*"
+  - name: "stage4-PCG EPC"
+    jobs:
+      job_5:
+        runs-on:
+          pool-name: docker  #docker-on-devcloud、docker、local、agentless
+          container:
+            image: mirrors.tencent.com/ci/tlinux_ci:0.5.0.4
+        steps:
+          - checkout: https://git.woa.com/jimxzcai/cpp_test_jim.git
+            with:
+              refName: stream-test
+          - uses: CodeccCheckAtomDebug@4.*
+            name: 腾讯代码分析
+            with:
+                beAutoLang: true # 不自动检测项目语言
+                checkerSetType: "epcScan" # 规则集类型，normal对应自主配置规则集，openScan对应按开源治理要求配置，epcScan对应按PCG EPC要求配置。选了openScan或epcScan则不需要填写后面的内容
+                customPath: # 黑名单。设置后不扫描黑名单中路径，例如.*/tirdParty/.*
+                    - ".*/js/vue/.*"
