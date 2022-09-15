@@ -3,7 +3,7 @@ version: v2.0
 on:
   repo_hook:
   - name: yongyiduanGroup1/**
-    credentials: duanduan_private_token
+    credentials: private_token
     events:
       push:
         branches: [ "master" ]
@@ -32,7 +32,7 @@ on:
           - branch
           - tag
   - name: yongyiduanGroup1/yongyiduanGroup2/yongyiduanGroup3/**
-    credentials: duanduan_private_token
+    credentials: private_token
     events:
       push:
         branches: [ "master" ]

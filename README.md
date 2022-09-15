@@ -34,7 +34,7 @@
 > - .ci/all-templates.yml 全部语法(模板)Yaml文件
 > - .ci/templates/all-test/* 测试需要的模板文件
 > - all-test-templates 测试需要的远程模板库
-> - ruotian_private_token 测试需要的凭证
+> - private_token 测试需要的凭证
 > - trigger 触发分支
 > - master MR目标分支
 > - triggers/trigger-all-templates.txt 触发文件 -自动修改(手动)

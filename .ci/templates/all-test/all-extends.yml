@@ -171,4 +171,4 @@ resources:
       name: variablesRepo
       ref: variables  # 可选
       credentials: # 可选，默认为开启CI的用户
-        personal-access-token: ${{ settings.ruotian_private_token }}    
+        personal-access-token: ${{ settings.private_token }}    
