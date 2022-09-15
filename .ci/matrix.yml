@@ -25,10 +25,8 @@ stages:
 - name: 静态矩阵
   jobs:
     node-build:
-        runs-on: ${{ matrix.os }}
         strategy:
           matrix:
-            os: [docker, macos-10.15]
             node: ["12.13.1", "10.11.0"]
         steps:
           - run: |
