@@ -17,9 +17,6 @@ steps:
 
       echo  SECRETKEY ${{ settings.secretKey_test.secretKey }}
 
-      echo  APPID_SECRETKEY appid ${{ settings.keystore_f00b20e567.appId }}
-      echo  APPID_SECRETKEY secretKey ${{ settings.keystore_f00b20e567.secretKey }}
-
       echo  SSH_PRIVATEKEY privateKey 
       cat>private_key.txt<<EOF
       ${{ settings.ssh_test.privateKey }}
