@@ -6,8 +6,6 @@ on:
   mr:
     target-branches:
       - master
-    paths:
-      - triggers/trigger-all.txt
   
 variables:
   WINDOW_TRIGGER: false

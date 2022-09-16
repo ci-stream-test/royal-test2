@@ -2,22 +2,22 @@ version: v2.0
  
 name: 全部语法测试(无模板)
 
-on:
-  push:
-    branches:
-      - trigger-all
-    paths:
-      - triggers/trigger-all.txt
-  tag:
-    tags:
-      - tag-all-*
-    from-branches:
-      - trigger-all
-  mr:
-    target-branches:
-      - master
-    paths:
-      - triggers/trigger-all.txt
+# on:
+#   push:
+#     branches:
+#       - trigger-all
+#     paths:
+#       - triggers/trigger-all.txt
+#   tag:
+#     tags:
+#       - tag-all-*
+#     from-branches:
+#       - trigger-all
+#   mr:
+#     target-branches:
+#       - master
+#     paths:
+#       - triggers/trigger-all.txt
   
 concurrency:
   group: ${{ ci.branch }}

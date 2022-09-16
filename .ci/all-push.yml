@@ -2,12 +2,12 @@ version: v2.0
  
 name: 全部语法测试-PUSH(无模板)
 
-on:
-  push:
-    branches:
-      - trigger-all
-    paths:
-      - triggers/trigger-all.txt
+# on:
+#   push:
+#     branches:
+#       - trigger-all
+#     paths:
+#       - triggers/trigger-all.txt
   
 variables:
   WINDOW_TRIGGER: false
